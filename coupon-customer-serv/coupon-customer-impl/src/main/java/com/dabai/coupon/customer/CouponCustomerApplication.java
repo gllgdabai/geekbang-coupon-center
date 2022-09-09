@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableDiscoveryClient
 //发起到coupon-template-serv的调用，使用CanaryRuleConfiguration中定义的负载均衡Rule
 @LoadBalancerClient(value = "coupon-template-serv", configuration = CanaryRuleConfiguration.class)
+@EnableFeignClients(basePackages = {"com.dabai"})
 public class CouponCustomerApplication {
     public static void main(String[] args) {
         SpringApplication.run(CouponCustomerApplication.class, args);
