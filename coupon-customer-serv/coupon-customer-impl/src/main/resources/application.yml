@@ -88,3 +88,5 @@ feign:
       coupon-template-serv:
         connectTimeout: 1000
         readTimeout: 2000
+  circuitbreaker:
+    enabled: true
