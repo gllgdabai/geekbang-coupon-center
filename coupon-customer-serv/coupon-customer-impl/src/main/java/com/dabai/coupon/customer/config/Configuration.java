@@ -1,5 +1,6 @@
 package com.dabai.coupon.customer.config;
 
+import feign.Logger;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,5 +21,11 @@ public class Configuration {
     @LoadBalanced
     public WebClient.Builder register() {
         return WebClient.builder();
+    }
+
+    @Bean
+    Logger.Level feignLogger() {
+        //指定OpenFeign的日志级别为FULL,在这个级别下所输出的日志文件将会包含最详细的服务调用信息
+        return Logger.Level.FULL;
     }
 }
