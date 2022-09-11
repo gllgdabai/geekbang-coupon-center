@@ -1,7 +1,9 @@
 package com.dabai.coupon.customer.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.dabai.coupon.customer.api.beans.RequestCoupon;
 import com.dabai.coupon.customer.api.beans.SearchCoupon;
+import com.dabai.coupon.customer.api.enums.CouponStatus;
 import com.dabai.coupon.customer.dao.entity.Coupon;
 import com.dabai.coupon.customer.service.CouponCustomerService;
 import com.dabai.coupon.template.api.beans.CouponInfo;
@@ -35,12 +37,17 @@ public class CouponCustomerController {
     private CouponCustomerService couponCustomerService;
 
     @PostMapping("requestCoupon")
+    @SentinelResource(value = "requestCoupon", fallback = "getNothing")
     public Coupon requestCoupon(@Valid @RequestBody RequestCoupon request) {
         if (disableCoupon) {
             log.info("暂停领取优惠券");
             return null;
         }
         return couponCustomerService.requestCoupon(request);
+    }
+
+    public Coupon getNothing(RequestCoupon request) {
+        return Coupon.builder().status(CouponStatus.INACTIVE).build();
     }
 
     // 用户删除优惠券 - 逻辑删除
@@ -59,6 +66,8 @@ public class CouponCustomerController {
     // ResponseEntity - 指定返回状态码 - 可以作为一个课后思考题
     // 下单核销优惠券
     @PostMapping("placeOrder")
+    // 可以使用同一个资源，这样控制就会对两个资源生效
+    @SentinelResource(value = "checkout")
     public ShoppingCart checkout(@Valid @RequestBody ShoppingCart info) {
         return couponCustomerService.placeOrder(info);
     }
@@ -66,6 +75,7 @@ public class CouponCustomerController {
 
     // 实现的时候最好封装一个search object类
     @PostMapping("findCoupon")
+    @SentinelResource(value = "customer-findCoupon")
     public List<CouponInfo> findCoupon(@Valid @RequestBody SearchCoupon request) {
         return couponCustomerService.findCoupon(request);
     }
