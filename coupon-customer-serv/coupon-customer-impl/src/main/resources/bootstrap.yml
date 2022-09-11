@@ -1,0 +1,40 @@
+spring:
+  # 必须把name属性从application.yml迁移过来，否则无法动态刷新
+  application:
+    name: coupon-customer-serv
+  cloud:
+    nacos:
+      config:
+        # nacos config服务器的地址
+        server-addr: 182.61.132.92:8848
+        # 需要加载的文件扩展名，默认为properties
+        file-extension: yml
+        # prefix: 文件名前缀，默认是spring.application.name
+        # 如果没有指定命令空间，则默认命令空间为PUBLIC
+        namespace: dev
+        # 如果没有配置Group，则默认值为DEFAULT_GROUP
+        group: DEFAULT_GROUP
+        # 从Nacos读取配置项的超时时间
+        timeout: 15000
+        # 长轮询的超时时间
+        config-long-poll-timeout: 10000
+        # 轮询的重试时间
+        config-retry-time: 100000
+        # 长轮询的最大重试次数
+        max-retry: 3
+        # 开启监听和自动刷新
+        refresh-enabled: true
+        # Nacos的扩展配置项，数字越大优先级越高
+        enable-remote-sync-config: true
+        #配置多源读取策略
+#        extension-configs:
+#          - # 读取的文件名
+#          - dataId: coupon-config.yml
+#            # 所属分组
+#            group: EXT_GROUP
+#            # 是否支持动态刷新
+#            refresh: true
+#          # 可以添加其他节点
+#          - dataId: rabbitmq-config.yml
+#            group: EXT_GROUP
+#            refresh: true

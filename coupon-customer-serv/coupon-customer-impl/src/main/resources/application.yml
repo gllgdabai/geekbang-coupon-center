@@ -5,24 +5,9 @@ server:
     include-message: always
 
 spring:
-  application:
-    name: coupon-customer-serv
-  datasource:
-    # mysql数据源
-    username: root
-    password: '!L15916530446'
-    url: jdbc:mysql://182.61.132.92:3306/geekbang_coupon_db?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    # 连接池
-    hikari:
-      pool-name: GeekbangCouponHikari
-      connection-timeout: 5000
-      idle-timeout: 30000
-      maximum-pool-size: 10
-      minimum-idle: 5
-      max-lifetime: 60000
-      auto-commit: true
+  # spring.application.name属性迁移至bootstrap.yml
+  # spring.dabasource的配置项迁移至nacos config
+  # jpa配置
   jpa:
     show-sql: true
     hibernate:

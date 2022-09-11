@@ -10,6 +10,8 @@ import com.dabai.coupon.template.api.beans.SimulationOrder;
 import com.dabai.coupon.template.api.beans.SimulationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,13 +24,22 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("coupon-customer")
+//NacosConfig中的属性变动动态同步到当前类的变量
+@RefreshScope
 public class CouponCustomerController {
+
+    @Value("${disableCouponRequest:false}")
+    private Boolean disableCoupon;
 
     @Autowired
     private CouponCustomerService couponCustomerService;
 
     @PostMapping("requestCoupon")
     public Coupon requestCoupon(@Valid @RequestBody RequestCoupon request) {
+        if (disableCoupon) {
+            log.info("暂停领取优惠券");
+            return null;
+        }
         return couponCustomerService.requestCoupon(request);
     }
 
