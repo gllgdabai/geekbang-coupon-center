@@ -54,20 +54,20 @@ public class CouponTemplateController {
     //批量获取
     @GetMapping("/getBatch")
     // 你也可以通过defaultFallback属性做一个全局限流、降级的处理逻辑
-    // 如果你不想将降级方法写在当前类里，可以通过blockHandlerClass和fallbackClass指定"降级类"
+    // 如果你不想将降级方法写在当前类里，可以通过注解blockHandlerClass和fallbackClass指定"降级类"
     @SentinelResource(
             value = "getTemplateInBatch",
             fallback = "getTemplateInBatch_fallback",
-            //为当前资源指定限流后的降级方法
             blockHandler = "getTemplateInBatch_block"
     )
     public Map<Long, CouponTemplateInfo> getTemplateInBatch(@RequestParam("ids") Collection<Long> ids) {
+        // 如果接口被熔断，那么下面这行log不会被打印出来
         log.info("getTemplateInBatch: {}", JSON.toJSONString(ids));
         return couponTemplateService.getTemplateInfoMap(ids);
     }
 
     /**
-     * 接口被降级时的方法
+     * 通用的降级逻辑，应对BlockException以外的各种运行期异常的情况
      */
     public Map<Long, CouponTemplateInfo> getTemplateInBatch_fallback(Collection<Long> ids) {
         log.info("接口被降级");
@@ -75,7 +75,7 @@ public class CouponTemplateController {
     }
     /**
      *  流控降级的方法
-     *  如果当前服务抛出了BlockException，那么就会转而执行该限流方法
+     *  只有当前服务抛出了BlockException，才会转而执行该限流方法
      */
     public Map<Long, CouponTemplateInfo> getTemplateInBatch_block(Collection<Long> ids, BlockException exception) {
         log.info("接口被限流");
